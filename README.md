@@ -260,8 +260,18 @@ npm install            # also builds via the `prepare` hook
 
 ### Claude Code
 
+Add it as an MCP server:
+
 ```bash
 claude mcp add apple-stocks -- npx -y apple-stocks-mcp
+```
+
+…or install it as a **plugin** (this repo is also a Claude Code plugin
+marketplace), which wires up the MCP server for you:
+
+```text
+/plugin marketplace add helderpgoncalves/apple-stocks-mcp
+/plugin install apple-stocks-mcp@apple-stocks
 ```
 
 Restart the client after editing the config.

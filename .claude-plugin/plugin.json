@@ -1,0 +1,13 @@
+{
+  "name": "apple-stocks-mcp",
+  "description": "Read your macOS Apple Stocks app data locally: watchlist, quotes, fundamentals and intraday charts. Read-only, no network, no API keys.",
+  "version": "1.1.2",
+  "author": {
+    "name": "Hélder Gonçalves",
+    "url": "https://github.com/helderpgoncalves"
+  },
+  "homepage": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+  "repository": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+  "license": "MIT",
+  "keywords": ["apple-stocks", "stocks", "watchlist", "finance", "macos", "mcp"]
+}

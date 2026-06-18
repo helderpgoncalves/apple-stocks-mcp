@@ -5,6 +5,18 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-06-18
+
+### Added
+
+- **Claude Code plugin marketplace.** The repo is now also a Claude Code plugin
+  marketplace, so users can `/plugin marketplace add helderpgoncalves/apple-stocks-mcp`
+  and `/plugin install apple-stocks-mcp@apple-stocks` instead of configuring the
+  MCP server by hand (`.claude-plugin/marketplace.json`, `.claude-plugin/plugin.json`,
+  `.mcp.json`).
+- Repository governance: `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, issue
+  and PR templates, Dependabot, and a tag-triggered release workflow.
+
 ## [1.1.1] - 2026-06-18
 
 ### Added
@@ -46,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tools: `list_watchlist`, `get_quote`, `quote_watchlist`, `apple_stock`,
   `add_stock` (opens the Stocks app via the `stocks://` URL scheme).
 
+[1.1.2]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.2
 [1.1.1]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.0
 [1.0.0]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.0.0

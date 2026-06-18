@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "apple-stocks": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "apple-stocks-mcp"]
+    }
+  }
+}
