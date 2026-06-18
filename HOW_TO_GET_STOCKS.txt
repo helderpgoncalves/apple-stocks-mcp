@@ -1,0 +1,169 @@
+================================================================
+COMO EXTRAIR A WATCHLIST DO APP APPLE STOCKS (macOS)
+================================================================
+
+Objetivo: exportar a lista de ativos guardada no app Stocks da Apple,
+que não tem API oficial nem botão de "exportar". Os dados ficam num
+banco local em formato JSON com registos codificados em binary plist
+(NSKeyedArchiver) dentro de base64.
+
+Baseado no artigo:
+  "Building an Apple Stocks Exporter" — Henry Ogedegbe Jr. (Quincy Labs)
+  https://quincylabs.substack.com/p/building-an-apple-stocks-exporter
+
+Aqui usei o método do "filesystem cache" (não precisa do app aberto
+nem de compilar Swift) — basta ler e descodificar o ficheiro local.
+
+
+----------------------------------------------------------------
+1) ONDE FICAM OS DADOS
+----------------------------------------------------------------
+
+O ficheiro principal da watchlist:
+
+  ~/Library/Group Containers/group.com.apple.stocks/Library/Documents/PrivateData/com.apple.stocks.private-production-dbstore.json
+
+Outras pastas relacionadas (úteis para explorar):
+
+  ~/Library/Containers/com.apple.stocks/
+  ~/Library/Containers/com.apple.stocks.widget/
+  ~/Library/Group Containers/group.com.apple.stocks/
+  ~/Library/Group Containers/group.com.apple.stocks-news/
+
+
+----------------------------------------------------------------
+2) ESTRUTURA DO FICHEIRO
+----------------------------------------------------------------
+
+O JSON tem a forma:
+
+  database
+   └── zones[]                  (lista de "zonas" CloudKit)
+        ├── name: "Watchlist"   <- a que interessa
+        └── serverRecords[]      (lista de strings em BASE64)
+
+Cada item de serverRecords é um BINARY PLIST (bplist / NSKeyedArchiver)
+codificado em base64. Dentro de cada plist existe a tabela "$objects".
+
+Os registos encontrados na zona "Watchlist":
+  - record 0  -> watchlist de CRIPTO (BTC-USD, ETH-USD, SOL-USD)
+  - record 1  -> "WatchlistOrder" (apenas ordenação, ignorar)
+  - record 2  -> watchlist principal "Stocks" (~97 símbolos)  <- a grande
+  - record 3  -> ordenação / nomes de registo (ignorar tickers tipo "Stocks")
+
+Os símbolos vêm dentro de campos "EncryptedData"/"ValueStore" como bytes,
+NÃO como strings simples. Cada símbolo está codificado assim:
+
+  [byte marcador] [byte comprimento] [símbolo em ASCII]
+  ex.:  6a 07 'BTC-USD'  6a 07 'ETH-USD'  ...
+        (0x6a = 'j', 0x07 = comprimento 7)
+
+Por isso é preciso percorrer os bytes e ler comprimento+texto.
+
+
+----------------------------------------------------------------
+3) PASSOS USADOS
+----------------------------------------------------------------
+
+a) Localizar os containers do Stocks:
+     ls -la ~/Library/Containers/ | grep -i stock
+     ls -la ~/Library/Group\ Containers/ | grep -i stock
+
+b) Encontrar o ficheiro da base de dados:
+     find ~/Library/Group\ Containers/group.com.apple.stocks -type f
+
+c) Ler o JSON -> abrir database.zones -> escolher a zona "Watchlist".
+
+d) Para cada serverRecord:
+     - base64 decode
+     - plistlib.loads() para descodificar o binary plist
+     - varrer "$objects" à procura de campos bytes
+     - extrair os símbolos com o parser de [marcador][len][ascii]
+
+e) Juntar tudo, remover artefactos que NÃO são tickers
+   ("watchlist", "Stocks", "Crypto", "Equity", "Index", "ETF"...),
+   tirar duplicados mantendo a ordem.
+
+f) Gravar em watchlist.txt (um símbolo por linha).
+
+
+----------------------------------------------------------------
+4) SCRIPT (Python 3 — só usa a biblioteca padrão)
+----------------------------------------------------------------
+
+Guardar como export_watchlist.py e correr:  python3 export_watchlist.py
+
+----------------------------------------------------------------
+import json, os, base64, plistlib, re
+
+F = os.path.expanduser(
+    "~/Library/Group Containers/group.com.apple.stocks/"
+    "Library/Documents/PrivateData/"
+    "com.apple.stocks.private-production-dbstore.json")
+
+def extract_symbols(blob):
+    """Lê bytes no formato [marcador][len][ascii] e devolve a lista de símbolos."""
+    syms, i, n = [], 0, len(blob)
+    while i < n - 1:
+        ln = blob[i + 1]
+        if 1 <= ln <= 12 and i + 2 + ln <= n:
+            chunk = blob[i + 2:i + 2 + ln]
+            try:
+                s = chunk.decode("ascii")
+            except Exception:
+                i += 1; continue
+            if re.fullmatch(r"[A-Za-z0-9.\-=^]+", s):
+                syms.append(s); i += 2 + ln; continue
+        i += 1
+    return syms
+
+d = json.load(open(F))
+zone = [z for z in d["database"]["zones"] if z.get("name") == "Watchlist"][0]
+
+JUNK = {"Crypto", "Equity", "Index", "ETF", "MutualFund",
+        "Fund", "watchlist", "Stocks"}
+
+main, crypto = [], []
+for idx, rec in enumerate(zone["serverRecords"]):
+    objs = plistlib.loads(base64.b64decode(rec))["$objects"]
+    for o in objs:
+        if isinstance(o, bytes) and len(o) > 3:
+            s = [x for x in extract_symbols(o) if x not in JUNK]
+            if s:
+                if idx == 2:   main = s      # watchlist principal
+                elif idx == 0: crypto = s    # cripto
+
+ordered = []
+for s in main + crypto:
+    if s not in ordered:
+        ordered.append(s)
+
+out = os.path.expanduser("~/Downloads/helder/investimentos/watchlist.txt")
+with open(out, "w") as f:
+    f.write("\n".join(ordered) + "\n")
+
+print(f"Gravado: {out}  ({len(ordered)} símbolos)")
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+5) NOTAS
+----------------------------------------------------------------
+
+- O ficheiro pode mudar de formato em futuras versões do macOS;
+  se o parser falhar, voltar ao passo (b)/(d) e inspecionar o
+  "$objects" para ver onde estão os símbolos.
+
+- Índices de tickers reconhecidos:
+    .LS = Lisboa | .DE = Alemanha (Xetra) | .PA = Paris |
+    .MI = Milão  | .L = Londres | .AS = Amsterdão | .F = Frankfurt
+    ^   = índice (^VIX, ^NDX, ^DJI)
+    =X  = par de câmbio (EURUSD=X)
+    -USD = cripto (BTC-USD, ETH-USD, SOL-USD)
+
+- Alternativa do artigo (método 2): ler a UI do app aberto via
+  Accessibility API (AXUIElement) com travessia em profundidade.
+  Aqui não foi necessário — o cache no disco bastou.
+
+- Resultado desta extração: 99 símbolos -> watchlist.txt
+================================================================

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+npm-debug.log*
+
+# Personal watchlist export — kept out of the public repo (the server reads the
+# Apple Stocks app directly and does not need this file).
+watchlist.txt
