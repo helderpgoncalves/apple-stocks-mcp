@@ -1,0 +1,21 @@
+{
+  "name": "apple-stocks",
+  "interface": {
+    "displayName": "Apple Stocks",
+    "shortDescription": "Read your macOS Apple Stocks app data locally, read-only."
+  },
+  "plugins": [
+    {
+      "name": "apple-stocks-mcp",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/helderpgoncalves/apple-stocks-mcp.git"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Finance"
+    }
+  ]
+}

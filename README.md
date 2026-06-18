@@ -305,6 +305,18 @@ marketplace), which wires up the MCP server for you:
 
 Restart the client after editing the config.
 
+### OpenAI Codex
+
+This repo is also an **OpenAI Codex plugin**. Add the marketplace and install:
+
+```bash
+codex plugin marketplace add helderpgoncalves/apple-stocks-mcp
+codex plugin install apple-stocks-mcp
+```
+
+Or add it as a plain MCP server in your Codex config (`command: npx`,
+`args: ["-y", "apple-stocks-mcp"]`).
+
 ---
 
 ## Quick local test

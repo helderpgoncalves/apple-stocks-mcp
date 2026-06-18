@@ -5,6 +5,17 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2026-06-18
+
+### Added
+
+- **OpenAI Codex plugin support.** The repo is now also a Codex plugin
+  (`.codex-plugin/plugin.json` + `.codex-plugin/mcp.json`) and Codex marketplace
+  (`.agents/plugins/marketplace.json`), so it can be installed with
+  `codex plugin marketplace add helderpgoncalves/apple-stocks-mcp` and
+  `codex plugin install apple-stocks-mcp`. Now installable on npm, the MCP
+  Registry, Claude Code, and Codex.
+
 ## [1.1.4] - 2026-06-18
 
 ### Changed
@@ -85,6 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tools: `list_watchlist`, `get_quote`, `quote_watchlist`, `apple_stock`,
   `add_stock` (opens the Stocks app via the `stocks://` URL scheme).
 
+[1.1.5]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.5
 [1.1.4]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.4
 [1.1.3]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.3
 [1.1.2]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.2

@@ -1,0 +1,31 @@
+{
+  "name": "apple-stocks-mcp",
+  "version": "1.1.5",
+  "description": "Read your macOS Apple Stocks app data locally: watchlist, quotes, fundamentals and intraday charts. Read-only, no network, no API keys.",
+  "author": {
+    "name": "Hélder Gonçalves",
+    "url": "https://github.com/helderpgoncalves"
+  },
+  "homepage": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+  "repository": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+  "license": "MIT",
+  "keywords": ["apple-stocks", "stocks", "watchlist", "finance", "macos", "mcp"],
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "Apple Stocks",
+    "shortDescription": "Your macOS Apple Stocks data, read locally — watchlist, quotes, fundamentals, charts.",
+    "longDescription": "A macOS-only MCP server that reads the data your pre-installed Apple Stocks app already cached on your Mac: your watchlist, quotes, fundamentals (P/E, EPS, dividend, 52-week range, market cap) and intraday charts. 100% local and read-only — no network requests, no external API, no API keys, no telemetry. Not affiliated with Apple Inc.",
+    "developerName": "Hélder Gonçalves",
+    "category": "Finance",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+    "privacyPolicyURL": "https://github.com/helderpgoncalves/apple-stocks-mcp#privacy",
+    "termsOfServiceURL": "https://github.com/helderpgoncalves/apple-stocks-mcp#legal",
+    "defaultPrompt": [
+      "What's the Apple stock doing today?",
+      "Summarize my Apple Stocks watchlist and the biggest movers.",
+      "Show me the fundamentals for NVDA."
+    ],
+    "brandColor": "#000000"
+  }
+}

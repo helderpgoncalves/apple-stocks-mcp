@@ -1,0 +1,8 @@
+{
+  "mcp_servers": {
+    "apple-stocks": {
+      "command": "npx",
+      "args": ["-y", "apple-stocks-mcp"]
+    }
+  }
+}
