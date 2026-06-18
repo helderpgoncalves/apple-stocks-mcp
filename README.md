@@ -1,6 +1,6 @@
 # Apple Stocks Watchlist — MCP Server (macOS)
 
-[![CI](https://github.com/helderpgoncalves/apple-stocks-watchlist-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/helderpgoncalves/apple-stocks-watchlist-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/helderpgoncalves/apple-stocks-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/helderpgoncalves/apple-stocks-mcp/actions/workflows/ci.yml)
 
 An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant read
 your **pre-installed macOS Apple Stocks app** — its **watchlist** and its
@@ -26,8 +26,6 @@ Stocks app last synced — open the app to refresh.
 | Watchlist symbols | `Library/Documents/PrivateData/com.apple.stocks.private-production-dbstore.json` — a JSON file whose records are base64 binary-plists; symbols are decoded from them. |
 | Quotes (price, change, currency, market state) | `Library/Caches/shared-database` — a SQLite cache the Stocks app maintains (`quotes` table). |
 | Company names / exchanges | the same SQLite cache (`stock_metadata` table). |
-
-See [`HOW_TO_GET_STOCKS.txt`](./HOW_TO_GET_STOCKS.txt) for the full reverse-engineering notes.
 
 This is the same "read the app's local store directly" approach used by
 [`apple-notes-mcp`](https://github.com/sirmews/apple-notes-mcp).
@@ -90,8 +88,8 @@ store directly, don't write it.)
 ## Install & build
 
 ```bash
-git clone https://github.com/helderpgoncalves/apple-stocks-watchlist-mcp.git
-cd apple-stocks-watchlist-mcp
+git clone https://github.com/helderpgoncalves/apple-stocks-mcp.git
+cd apple-stocks-mcp
 npm install      # also builds via the `prepare` hook
 ```
 
@@ -108,9 +106,9 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "apple-stocks-watchlist": {
+    "apple-stocks": {
       "command": "node",
-      "args": ["/absolute/path/to/apple-stocks-watchlist-mcp/dist/index.js"]
+      "args": ["/absolute/path/to/apple-stocks-mcp/dist/index.js"]
     }
   }
 }
@@ -119,7 +117,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add apple-stocks-watchlist -- node /absolute/path/to/dist/index.js
+claude mcp add apple-stocks -- node /absolute/path/to/dist/index.js
 ```
 
 Restart the client and ask:
@@ -176,7 +174,6 @@ test/
   appleStocks.test.ts
   fixtures/          # synthetic data — no personal holdings
 .github/workflows/ci.yml
-HOW_TO_GET_STOCKS.txt  # how the Apple Stocks data is laid out and decoded
 ```
 
 ---

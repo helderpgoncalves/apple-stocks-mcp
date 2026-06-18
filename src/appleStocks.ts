@@ -6,7 +6,7 @@
  *   1. Watchlist symbols
  *      …/PrivateData/com.apple.stocks.private-production-dbstore.json
  *      JSON whose `serverRecords` are base64 binary-plists; symbols live inside
- *      as [marker][len][ascii] byte runs. See HOW_TO_GET_STOCKS.txt.
+ *      as [marker][len][ascii] byte runs.
  *
  *   2. Quotes / fundamentals / names  (SQLite: shared-database)
  *      `quotes`         -> price / change / currency / market state / market cap
@@ -147,8 +147,7 @@ interface DbStore {
 
 /**
  * Read the ordered, de-duplicated list of watchlist symbols straight from the
- * Apple Stocks app. Equities first (record 2), then crypto (record 0), matching
- * the export logic documented in HOW_TO_GET_STOCKS.txt.
+ * Apple Stocks app. Equities come from record 2, crypto from record 0.
  */
 export async function readWatchlist(): Promise<string[]> {
   assertMacOSStocks();

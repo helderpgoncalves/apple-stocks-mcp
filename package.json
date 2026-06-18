@@ -1,10 +1,10 @@
 {
-  "name": "apple-stocks-watchlist-mcp",
+  "name": "apple-stocks-mcp",
   "version": "1.1.0",
   "description": "macOS-only MCP server that reads your pre-installed Apple Stocks app — its watchlist and cached quotes — with first-class support for Apple (AAPL). No external API.",
   "type": "module",
   "bin": {
-    "apple-stocks-watchlist-mcp": "dist/index.js"
+    "apple-stocks-mcp": "dist/index.js"
   },
   "main": "dist/index.js",
   "files": [
@@ -32,6 +32,14 @@
   ],
   "author": "Helder Pimenta",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helderpgoncalves/apple-stocks-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/helderpgoncalves/apple-stocks-mcp/issues"
+  },
+  "homepage": "https://github.com/helderpgoncalves/apple-stocks-mcp#readme",
   "engines": {
     "node": ">=18"
   },
