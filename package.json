@@ -12,9 +12,6 @@
     "README.md",
     "LICENSE"
   ],
-  "os": [
-    "darwin"
-  ],
   "scripts": {
     "build": "tsc",
     "build:test": "tsc -p tsconfig.test.json",
