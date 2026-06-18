@@ -46,7 +46,16 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: npm publish --access public
+        # Tolerate a version that's already on npm (idempotent re-runs) and skip
+        # cleanly if no NPM_TOKEN secret is configured.
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "NPM_TOKEN secret not set — skipping npm publish."; exit 0
+          fi
+          if npm view "apple-stocks-mcp@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+            echo "Version already on npm — skipping npm publish."; exit 0
+          fi
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -57,6 +66,7 @@ jobs:
           sudo mv mcp-publisher /usr/local/bin/
 
       - name: Publish to MCP Registry
+        continue-on-error: true
         run: |
           mcp-publisher login github-oidc
           mcp-publisher publish
