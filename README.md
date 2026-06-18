@@ -1,5 +1,7 @@
 # Apple Stocks Watchlist — MCP Server (macOS)
 
+[![CI](https://github.com/helderpgoncalves/apple-stocks-watchlist-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/helderpgoncalves/apple-stocks-watchlist-mcp/actions/workflows/ci.yml)
+
 An [MCP](https://modelcontextprotocol.io) server that lets an AI assistant read
 your **pre-installed macOS Apple Stocks app** — its **watchlist** and its
 **cached quotes** — and open symbols in the app to add them. There's a
@@ -39,8 +41,28 @@ This is the same "read the app's local store directly" approach used by
 | `list_watchlist` | List every ticker in your Apple Stocks watchlist (in order). |
 | `get_quote` | Price + daily change for one or more symbols, from the app cache. |
 | `quote_watchlist` | Cached quotes for every symbol in the watchlist. |
-| `apple_stock` | AAPL quote + whether it's in the watchlist. |
+| `stock_details` | Full fundamentals: day & 52-week range, market cap, volume, P/E, EPS, beta, dividend yield, next earnings. |
+| `stock_chart` | Cached intraday OHLCV chart (ASCII sparkline) + change vs previous close. |
+| `apple_stock` | Apple (AAPL) fundamentals + whether it's in the watchlist. |
+| `portfolio_summary` | Whole-watchlist analysis: up/down counts, top gainers/losers, breakdown by currency & exchange. |
+| `top_movers` | The biggest gainers and losers in the watchlist today. |
+| `search_watchlist` | Search the watchlist by symbol or company name. |
+| `stocks_doctor` | Diagnose your setup (macOS? app data present? readable? Full Disk Access?). |
 | `add_stock` | **Opens** a symbol in the Apple Stocks app so you can add it with one click. |
+
+### Resources
+
+| Resource URI | Contents |
+| --- | --- |
+| `stocks://watchlist` | The watchlist symbols, one per line (`text/plain`). |
+| `stocks://quotes` | Cached quotes for every watchlist symbol (`application/json`). |
+
+### Prompts
+
+| Prompt | What it does |
+| --- | --- |
+| `analyze_portfolio` | Reviews the whole watchlist and highlights what's notable today. |
+| `research_stock` | Pulls fundamentals + intraday chart for one symbol and summarizes it. |
 
 ### Why `add_stock` opens the app instead of writing the database
 
@@ -125,13 +147,35 @@ Expected (example): `AAPL (Apple Inc.): 295.95 USD  -3.29 (-1.10%) [preMarket]`
 
 ---
 
+## Development & testing
+
+```bash
+npm run build      # compile to dist/
+npm run typecheck  # type-check only
+npm test           # build + run the test suite
+```
+
+The tests run against **synthetic fixtures** in `test/fixtures/` (a generated
+`dbstore.json` and two small SQLite databases) — they **never touch your real
+Apple Stocks data**. `STOCKS_TEST_MODE=1` bypasses the macOS gate so the pure
+parsing/formatting logic can be tested on any OS, which is what CI does
+(GitHub Actions, Linux, Node 18/20/22).
+
+You can also point the server at custom data via env vars (used by the tests):
+`STOCKS_DBSTORE_PATH`, `STOCKS_SHARED_DB_PATH`, `STOCKS_SPARKLINE_DB_PATH`,
+`STOCKS_SQLITE_BIN`.
+
 ## Project layout
 
 ```
 src/
-  index.ts          # MCP server + tool definitions
-  appleStocks.ts    # reads the Apple Stocks app: watchlist (bplist) + quotes (SQLite)
+  index.ts           # MCP server: tools, resources, prompts
+  appleStocks.ts     # reads the Apple Stocks app: watchlist (bplist) + quotes/details/chart (SQLite)
   bplist-parser.d.ts
+test/
+  appleStocks.test.ts
+  fixtures/          # synthetic data — no personal holdings
+.github/workflows/ci.yml
 HOW_TO_GET_STOCKS.txt  # how the Apple Stocks data is laid out and decoded
 ```
 
