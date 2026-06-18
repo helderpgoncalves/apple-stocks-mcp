@@ -25,6 +25,8 @@ import {
   formatChart,
   formatSummary,
   assertMacOSStocks,
+  isMacOS,
+  currentPlatform,
   DBSTORE_PATH,
 } from "./appleStocks.js";
 
@@ -34,7 +36,7 @@ const SYMBOL_RE = /^[A-Za-z0-9.\-=^]{1,15}$/;
 
 const server = new McpServer({
   name: "apple-stocks-watchlist",
-  version: "1.1.2",
+  version: "1.1.3",
 });
 
 function text(body: string) {
@@ -58,6 +60,42 @@ function requireSymbol(symbol: string): string {
   }
   return sym;
 }
+
+/** macOS is required for the real tools. */
+const SUPPORTED = isMacOS();
+
+const UNSUPPORTED_MESSAGE =
+  "🍎 apple-stocks-mcp only works on macOS.\n\n" +
+  "It reads the data already stored on your Mac by the pre-installed Apple Stocks " +
+  `app, so there's nothing for it to read on ${currentPlatform()}. No data is ever sent ` +
+  "anywhere — it's a local, read-only macOS tool.\n\n" +
+  "If you're not on a Mac, you can safely remove this server from your MCP client " +
+  "config (or, in Claude Code: `/plugin uninstall apple-stocks-mcp@apple-stocks`). " +
+  "Thanks for trying it! 👋";
+
+// ===========================================================================
+// platform_info — always available, so non-macOS users get a friendly answer
+// instead of a wall of failing tools.
+// ===========================================================================
+server.registerTool(
+  "platform_info",
+  {
+    title: "Platform Info",
+    description:
+      "Report whether this server can run here. apple-stocks-mcp is macOS-only (it reads the Apple Stocks app's local data).",
+    inputSchema: {},
+  },
+  () =>
+    text(
+      SUPPORTED
+        ? "✅ Running on macOS — all Apple Stocks tools are available."
+        : UNSUPPORTED_MESSAGE,
+    ),
+);
+
+// On non-macOS platforms we stop here: only `platform_info` is registered, so the
+// client shows one clear, friendly tool instead of 11 that would all fail.
+if (SUPPORTED) {
 
 // ===========================================================================
 // Tools
@@ -360,10 +398,20 @@ server.registerPrompt(
   }),
 );
 
+} // end if (SUPPORTED)
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("apple-stocks-watchlist MCP server running on stdio (macOS, reads Apple Stocks app data)");
+  if (SUPPORTED) {
+    console.error("apple-stocks-mcp running on stdio (macOS) — reads the Apple Stocks app's local data, read-only, no network.");
+  } else {
+    // Local-only notice (stderr → the client's logs). No network, no telemetry.
+    console.error(
+      `apple-stocks-mcp started on ${currentPlatform()}, which is unsupported. ` +
+        "Only the `platform_info` tool is available. This server is macOS-only.",
+    );
+  }
 }
 
 main().catch((error) => {

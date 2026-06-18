@@ -129,3 +129,33 @@ test("formatDetails includes fundamentals labels", async () => {
   assert.match(out, /Market cap: 4\.35T/);
   assert.match(out, /P\/E: 32\.5/);
 });
+
+test("currentPlatform / isMacOS honor STOCKS_FORCE_PLATFORM", () => {
+  const saved = process.env.STOCKS_FORCE_PLATFORM;
+  try {
+    process.env.STOCKS_FORCE_PLATFORM = "linux";
+    assert.equal(m.currentPlatform(), "linux");
+    assert.equal(m.isMacOS(), false);
+
+    process.env.STOCKS_FORCE_PLATFORM = "darwin";
+    assert.equal(m.currentPlatform(), "darwin");
+    assert.equal(m.isMacOS(), true);
+  } finally {
+    if (saved === undefined) delete process.env.STOCKS_FORCE_PLATFORM;
+    else process.env.STOCKS_FORCE_PLATFORM = saved;
+  }
+});
+
+test("assertMacOSStocks throws a friendly error on non-macOS", () => {
+  const saved = process.env.STOCKS_FORCE_PLATFORM;
+  const savedTest = process.env.STOCKS_TEST_MODE;
+  try {
+    delete process.env.STOCKS_TEST_MODE; // test-mode bypass off
+    process.env.STOCKS_FORCE_PLATFORM = "win32";
+    assert.throws(() => m.assertMacOSStocks(), /only works on macOS/);
+  } finally {
+    if (saved === undefined) delete process.env.STOCKS_FORCE_PLATFORM;
+    else process.env.STOCKS_FORCE_PLATFORM = saved;
+    if (savedTest !== undefined) process.env.STOCKS_TEST_MODE = savedTest;
+  }
+});

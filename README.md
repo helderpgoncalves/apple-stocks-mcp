@@ -22,7 +22,9 @@ app to refresh it.
 ![apple-stocks-mcp demo](./docs/demo.gif)
 
 > ⚠️ **macOS only.** The data lives inside the macOS Stocks app's container, so
-> this server does not work on Linux or Windows.
+> this server does not work on Linux or Windows. On a non-macOS host the server
+> still starts, but exposes a single `platform_info` tool that politely explains
+> it's macOS-only and how to remove it — no failing tools, no crashes.
 
 ---
 
@@ -69,7 +71,10 @@ This is the most important section, so it's first.
 - **Your own data.** It reads only files owned by your user account, in your home
   folder (`~/Library/Group Containers/group.com.apple.stocks/`). It does not
   access other users' data, remote accounts, or anything outside that container.
-- **No telemetry, no analytics, no tracking.** None. Ever.
+- **No telemetry, no analytics, no tracking.** None. Ever. The only thing ever
+  written outside the tool results is a one-line startup message to `stderr`
+  (which platform it started on) — that goes to your MCP client's local logs and
+  is **never** sent anywhere.
 - **You stay in control of access.** On recent macOS versions the app reading
   this data (your terminal or MCP client) must be granted **Full Disk Access** by
   you, in System Settings. Revoke it any time and the server can no longer read.
@@ -112,6 +117,7 @@ Apple service.
 | `search_watchlist` | Search the watchlist by symbol or company name. |
 | `stocks_doctor` | Diagnose your setup (macOS? data present? readable? Full Disk Access?). |
 | `add_stock` | **Opens** a symbol in the Stocks app so you can add it with one tap (no file is written). |
+| `platform_info` | Report whether the server can run here (always available; the only tool on non-macOS). |
 
 ### Resources
 

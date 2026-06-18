@@ -5,6 +5,21 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3] - 2026-06-18
+
+### Added
+
+- **Friendly non-macOS handling.** On Linux/Windows the server now starts cleanly
+  and exposes a single `platform_info` tool that explains it's macOS-only and how
+  to remove it — instead of registering 11 tools that all fail. A `platform_info`
+  tool is also available on macOS (reports "all tools available").
+
+### Notes
+
+- Still **no telemetry and no network**: the only thing written outside tool
+  results is a one-line `stderr` startup message (the platform it started on),
+  which stays in the client's local logs.
+
 ## [1.1.2] - 2026-06-18
 
 ### Added
@@ -58,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tools: `list_watchlist`, `get_quote`, `quote_watchlist`, `apple_stock`,
   `add_stock` (opens the Stocks app via the `stocks://` URL scheme).
 
+[1.1.3]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.3
 [1.1.2]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.2
 [1.1.1]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.1
 [1.1.0]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.0

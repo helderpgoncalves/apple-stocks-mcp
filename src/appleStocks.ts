@@ -72,9 +72,14 @@ export function appleTimeToIso(raw: unknown): string | undefined {
   return new Date((ts + APPLE_EPOCH_OFFSET) * 1000).toISOString();
 }
 
+/** The current platform string. STOCKS_FORCE_PLATFORM overrides for tests only. */
+export function currentPlatform(): string {
+  return process.env.STOCKS_FORCE_PLATFORM || platform();
+}
+
 /** True if we're on macOS. */
 export function isMacOS(): boolean {
-  return platform() === "darwin";
+  return currentPlatform() === "darwin";
 }
 
 /**
