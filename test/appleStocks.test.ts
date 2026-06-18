@@ -159,3 +159,4 @@ test("assertMacOSStocks throws a friendly error on non-macOS", () => {
     if (savedTest !== undefined) process.env.STOCKS_TEST_MODE = savedTest;
   }
 });
+

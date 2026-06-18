@@ -5,6 +5,18 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] - 2026-06-18
+
+### Changed
+
+- **Much friendlier errors for a smooth first run.** The server now distinguishes
+  "the Stocks app hasn't been opened yet" from "the data exists but can't be read"
+  (a macOS Full Disk Access permission), and gives precise, step-by-step,
+  copy-pasteable guidance for each — and makes clear the permission case is "not a
+  bug". `stocks_doctor` shows the same steps.
+- README: added a **Quick start (30 seconds)** section and FAQ entries for the
+  first-run permission prompt and the `npx` startup timeout (`MCP_TIMEOUT`).
+
 ## [1.1.3] - 2026-06-18
 
 ### Added
@@ -73,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tools: `list_watchlist`, `get_quote`, `quote_watchlist`, `apple_stock`,
   `add_stock` (opens the Stocks app via the `stocks://` URL scheme).
 
+[1.1.4]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.4
 [1.1.3]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.3
 [1.1.2]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.2
 [1.1.1]: https://github.com/helderpgoncalves/apple-stocks-mcp/releases/tag/v1.1.1

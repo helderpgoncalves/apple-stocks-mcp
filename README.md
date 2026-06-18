@@ -28,6 +28,29 @@ app to refresh it.
 
 ---
 
+## Quick start (30 seconds)
+
+On a Mac, open the **Stocks app once** (so its data exists), then:
+
+**Claude Desktop / any MCP client** — add this and restart:
+
+```json
+{ "mcpServers": { "apple-stocks": { "command": "npx", "args": ["-y", "apple-stocks-mcp"] } } }
+```
+
+**Claude Code:**
+
+```bash
+claude mcp add apple-stocks -- npx -y apple-stocks-mcp
+```
+
+Then ask: *"What's the Apple stock doing today?"* The first time, your client
+asks permission to use the tool — choose **Yes** (or "Yes, and don't ask again").
+That's it. If anything's off, ask it to run **`stocks_doctor`** — it tells you
+exactly what to fix.
+
+---
+
 ## Contents
 
 - [What you can ask](#what-you-can-ask)
@@ -313,17 +336,40 @@ printf '%s\n' \
 
 ## FAQ & troubleshooting
 
+The tools' error messages are self-explanatory and tell you exactly what to do,
+so you rarely need this section. When in doubt, ask your assistant to run
+**`stocks_doctor`** — it checks everything and prints the fix.
+
+<details>
+<summary><b>It asks for permission the first time. Is that normal?</b></summary>
+
+Yes — that's Claude's standard safety prompt the first time *any* MCP tool runs.
+Choose **Yes** (or "Yes, and don't ask again" to skip it next time). It's not an
+error and nothing is sent anywhere.
+</details>
+
 <details>
 <summary><b>A tool says the data is "not found" or "unreadable".</b></summary>
 
-Run `stocks_doctor` first — it pinpoints which check fails. The two common causes:
+The message tells you which case it is. The two causes:
 
-1. **The Stocks app has never run.** Open the Stocks app once so it creates its
-   data, then try again.
+1. **The Stocks app has never run.** Open the macOS Stocks app once so it creates
+   its data, then try again.
 2. **Full Disk Access.** On recent macOS, the app running this server (your
-   terminal, or the MCP client like Claude Desktop) must be granted **Full Disk
-   Access**. Go to *System Settings → Privacy & Security → Full Disk Access* and
-   enable it for that app, then restart it.
+   terminal, or your MCP client) must be granted **Full Disk Access**:
+   1. System Settings → Privacy & Security → **Full Disk Access**
+   2. Turn it **on** for your terminal / MCP client (add it with **+** if missing)
+   3. **Fully quit and reopen** that app, then try again
+
+Run `stocks_doctor` to re-check.
+</details>
+
+<details>
+<summary><b>First call times out or shows "failed to connect".</b></summary>
+
+The very first run downloads the package via `npx`, which can take a moment. Just
+try again, or raise the startup timeout: start your client with
+`MCP_TIMEOUT=60000` (milliseconds).
 </details>
 
 <details>

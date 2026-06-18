@@ -26,7 +26,7 @@
 
 import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { existsSync, accessSync, constants as fsConstants } from "node:fs";
 import { homedir, platform } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -91,19 +91,45 @@ function testMode(): boolean {
   return process.env.STOCKS_TEST_MODE === "1";
 }
 
-/** Throw a clear error if we're not on macOS or the Stocks data is missing. */
+/** Step-by-step instructions for granting Full Disk Access. */
+const FULL_DISK_ACCESS_STEPS =
+  "To fix this, grant Full Disk Access to the app running this server " +
+  "(your terminal, or your MCP client such as Claude):\n" +
+  "  1. Open System Settings → Privacy & Security → Full Disk Access\n" +
+  "  2. Turn it ON for your terminal / MCP client (add it with + if it's not listed)\n" +
+  "  3. Fully quit and reopen that app, then try again\n" +
+  "Run the `stocks_doctor` tool any time to re-check.";
+
+/**
+ * Throw a clear, actionable error if we're not on macOS, the Stocks app hasn't
+ * been opened yet, or the data exists but can't be read (Full Disk Access).
+ */
 export function assertMacOSStocks(): void {
-  if (!isMacOS() && !testMode()) {
+  if (testMode()) return;
+
+  if (!isMacOS()) {
     throw new Error(
       "This MCP server only works on macOS — it reads the pre-installed Apple Stocks app's local data.",
     );
   }
+
   if (!existsSync(DBSTORE_PATH)) {
     throw new Error(
-      `Apple Stocks watchlist file not found at:\n  ${DBSTORE_PATH}\n` +
-        "Open the Stocks app at least once so it creates its data. " +
-        "If the file exists but is unreadable, grant your client Full Disk Access " +
-        "(System Settings → Privacy & Security → Full Disk Access).",
+      "Couldn't find your Apple Stocks data yet.\n" +
+        "Open the macOS Stocks app at least once (so it creates its data), then try again.\n" +
+        `Expected location: ${DBSTORE_PATH}`,
+    );
+  }
+
+  // The file exists — make sure we can actually read it. A failure here almost
+  // always means Full Disk Access hasn't been granted to the client/terminal.
+  try {
+    accessSync(DBSTORE_PATH, fsConstants.R_OK);
+  } catch {
+    throw new Error(
+      "Your Apple Stocks data exists but this app can't read it — this is a " +
+        "macOS Full Disk Access permission, not a bug.\n\n" +
+        FULL_DISK_ACCESS_STEPS,
     );
   }
 }
@@ -741,9 +767,8 @@ export async function diagnostics(): Promise<DiagnosticCheck[]> {
       readOk = true;
       readDetail = `read ${wl.length} watchlist symbols and ${q.size} cached quotes`;
     } catch (err) {
-      readDetail =
-        (err instanceof Error ? err.message.split("\n")[0] : String(err)) +
-        " — you may need to grant Full Disk Access to your MCP client.";
+      const first = err instanceof Error ? err.message.split("\n")[0] : String(err);
+      readDetail = `${first}\n\n${FULL_DISK_ACCESS_STEPS}`;
     }
   }
   checks.push({ name: "Data is readable", ok: readOk, detail: readDetail });
