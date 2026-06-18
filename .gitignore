@@ -5,6 +5,9 @@ dist-test/
 .DS_Store
 npm-debug.log*
 
+# mcp-publisher CLI binary (downloaded locally, not committed)
+mcp-publisher
+
 # Personal watchlist export — kept out of the public repo (the server reads the
 # Apple Stocks app directly and does not need this file).
 watchlist.txt

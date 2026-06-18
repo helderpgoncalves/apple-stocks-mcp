@@ -34,7 +34,7 @@ const SYMBOL_RE = /^[A-Za-z0-9.\-=^]{1,15}$/;
 
 const server = new McpServer({
   name: "apple-stocks-watchlist",
-  version: "1.1.0",
+  version: "1.1.1",
 });
 
 function text(body: string) {

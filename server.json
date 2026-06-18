@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.helderpgoncalves/apple-stocks-mcp",
+  "description": "Reads your macOS Apple Stocks watchlist, quotes and fundamentals locally. Read-only, no network.",
+  "repository": {
+    "url": "https://github.com/helderpgoncalves/apple-stocks-mcp",
+    "source": "github"
+  },
+  "version": "1.1.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "apple-stocks-mcp",
+      "version": "1.1.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
