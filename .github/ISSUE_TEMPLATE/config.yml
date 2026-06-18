@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or setup help
+    url: https://github.com/helderpgoncalves/apple-stocks-mcp#faq--troubleshooting
+    about: Check the FAQ & troubleshooting section first (Full Disk Access, refreshing data, etc.).
+  - name: Security vulnerability
+    url: https://github.com/helderpgoncalves/apple-stocks-mcp/security/advisories/new
+    about: Please report security issues privately, not as a public issue.

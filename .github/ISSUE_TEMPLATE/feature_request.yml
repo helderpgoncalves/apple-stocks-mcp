@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest a new tool or improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      placeholder: "I'd like to ask my assistant about ..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: A new tool, a new field, an output change, etc.
+    validations:
+      required: false
+  - type: textarea
+    id: data
+    attributes:
+      label: Where would the data come from?
+      description: |
+        This server only reads the Apple Stocks app's local data (no network).
+        If your request needs data the app doesn't cache locally, it likely can't
+        be supported — note that here if relevant.
+    validations:
+      required: false

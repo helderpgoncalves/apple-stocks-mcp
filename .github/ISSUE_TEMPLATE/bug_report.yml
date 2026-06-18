@@ -1,0 +1,53 @@
+name: Bug report
+description: Something isn't working
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report! Since this server reads the macOS Stocks app's
+        local data, the `stocks_doctor` output below helps a lot.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+      placeholder: "Calling stock_details for AAPL returned ..."
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: stocks_doctor output
+      description: Run the `stocks_doctor` tool and paste the result (it redacts nothing sensitive — just paths and check results).
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: "apple-stocks-mcp 1.1.1"
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "macOS 15.5"
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: "v22.11.0"
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: MCP client
+      placeholder: "Claude Desktop / Claude Code / other"
+    validations:
+      required: false
