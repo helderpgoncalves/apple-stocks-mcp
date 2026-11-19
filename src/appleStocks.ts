@@ -31,7 +31,7 @@ import { homedir, platform } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { Buffer } from "node:buffer";
-import bplist from "bplist-parser";
+import { parseBuffer } from "bplist-parser";
 
 const execFileAsync = promisify(execFile);
 
@@ -192,7 +192,7 @@ export async function readWatchlist(): Promise<string[]> {
   zone.serverRecords.forEach((rec, idx) => {
     let objects: unknown[];
     try {
-      const parsed = bplist.parseBuffer(Buffer.from(rec, "base64"));
+      const parsed = parseBuffer(Buffer.from(rec, "base64"));
       objects = (parsed[0] as { $objects?: unknown[] })?.$objects ?? [];
     } catch {
       return;
