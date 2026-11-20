@@ -28,3 +28,8 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
